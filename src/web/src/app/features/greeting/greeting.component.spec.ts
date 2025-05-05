@@ -15,7 +15,7 @@ describe('Greetingcomponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should wrap getGreeting() return value in an HTML H1 tag', fakeAsync(() => {
+    it('should wrap getGreeting() return value in an HTML H1 tag (mocked true unit test)', fakeAsync(() => {
         const mockGetGreetingReturnValue = 'Mockity mock mock mock'; // https://shashankvivek-7.medium.com/testing-a-component-with-stub-services-and-spies-in-jasmine-1428d4242a49
         const theFirstH1Tag = fixture.nativeElement.querySelector('h1');
         // Thank you to https://stackoverflow.com/a/48734437 for the "any" trick on the next line.
@@ -24,10 +24,30 @@ describe('Greetingcomponent', () => {
         component.updateGreeting(); // updateGreeting()'s behavior is implicitly semi-mocked because it calls getGreeting(), which is explicitly mocked.
         fixture.whenStable().then(() => {
             fixture.detectChanges();
-            expect(theFirstH1Tag.textContent).toEqual(mockGetGreetingReturnValue); // This test should pass, because indeed:
-            // 1. our template code does surround {{ greeting }} in an H1 tag.
+            expect(theFirstH1Tag.textContent)
+                .withContext('should surround the hardcoded mock')
+                .toEqual(mockGetGreetingReturnValue);
+            expect(theFirstH1Tag.textContent)
+                .withContext('should not include getGreeting()\'s usual "Good" phrasing because we mocked it')
+                .toMatch(/^((?!Good).)*$/); // This is a regular expression for "does not contain 'Good'."  https://stackoverflow.com/a/406408
         });
+    }));
 
+    // Below is a demo of an integration test failing to be a proper unit test, because it does NOT use mocking.
+    // Yes, it's tempting to do because it requires fewer lines of code.
+    // But it doesn't follow "service layer" software architecture principles (https://katiekodes.com/subflow-service-layer-principles/), 
+    // and if getGreeting() runs slowly, you've now written a slow-running test for no good reason.
+    // Eat your veggies & write your mocks!  :)
+    it('should wrap getGreeting() return value in an HTML H1 tag (antipattern -- unmocked potentially nonperformant integration test)', fakeAsync(() => {
+        const theFirstH1Tag = fixture.nativeElement.querySelector('h1');
+        fixture.detectChanges();
+        component.updateGreeting(); // updateGreeting()'s behavior is implicitly semi-mocked because it calls getGreeting(), which is explicitly mocked.
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            expect(theFirstH1Tag.textContent)
+                .withContext('should not include getGreeting()\'s usual "Good" phrasing, because we did not bother to mock getGreeting()')
+                .toMatch(/^Good /);
+        });
     }));
 
 });
