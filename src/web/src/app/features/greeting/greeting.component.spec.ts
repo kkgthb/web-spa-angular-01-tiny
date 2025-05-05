@@ -18,7 +18,7 @@ describe('Greetingcomponent', () => {
     it('should wrap getGreeting() return value in an HTML H1 tag', fakeAsync(() => {
         const mockGetGreetingReturnValue = 'Mockity mock mock mock'; // https://shashankvivek-7.medium.com/testing-a-component-with-stub-services-and-spies-in-jasmine-1428d4242a49
         const theFirstH1Tag = fixture.nativeElement.querySelector('h1');
-        spyOn(component, 'mockFriendlyGetGreeting').and.returnValue(mockGetGreetingReturnValue); // Introduce a mock that overrides the real getGreeting().
+        spyOn<any>(GreetingComponent, 'mockableGetGreeting').and.returnValue(mockGetGreetingReturnValue); // Introduce a mock that overrides the real getGreeting().
         fixture.detectChanges();
         component.updateGreeting(); // updateGreeting()'s behavior is implicitly semi-mocked because it calls getGreeting(), which is explicitly mocked.
         fixture.whenStable().then(() => {

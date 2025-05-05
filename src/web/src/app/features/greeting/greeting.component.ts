@@ -7,12 +7,12 @@ import { Component } from "@angular/core";
 })
 
 export class GreetingComponent {
-    mockFriendlyGetGreeting = getGreeting;
+    private static mockableGetGreeting = getGreeting;
     greeting: string;
     constructor() {
         this.updateGreeting();
     }
     updateGreeting() {
-        this.greeting = this.mockFriendlyGetGreeting();
+        this.greeting = GreetingComponent.mockableGetGreeting();
     }
 }
