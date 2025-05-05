@@ -2,3 +2,7 @@
 .ignoreme
 node_modules
 .angular
+src/web/coverage
+src/web/test-results
+dist
+out-tsc
