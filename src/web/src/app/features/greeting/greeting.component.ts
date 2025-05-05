@@ -1,3 +1,4 @@
+import { getGreeting } from "./helpers/getGreeting/getGreeting";
 import { Component } from "@angular/core";
 
 @Component({
@@ -6,22 +7,12 @@ import { Component } from "@angular/core";
 })
 
 export class GreetingComponent {
+    mockFriendlyGetGreeting = getGreeting;
     greeting: string;
     constructor() {
         this.updateGreeting();
     }
-    getGreeting(): string {
-        const hour = new Date().getHours();
-        if (hour < 12) {
-            return 'Good morning!';
-        } else if (hour < 18) {
-            return 'Good afternoon!';
-        }
-        else {
-            return 'Good buggy evening!';
-        }
-    }
     updateGreeting() {
-        this.greeting = this.getGreeting();
+        this.greeting = this.mockFriendlyGetGreeting();
     }
 }

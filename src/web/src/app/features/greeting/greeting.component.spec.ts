@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, fakeAsync } from "@angular/core/testing";
 import { GreetingComponent } from "./greeting.component";
 
 describe('Greetingcomponent', () => {
@@ -15,24 +15,18 @@ describe('Greetingcomponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should return a time-of-day-based getGreeting()', () => {
-        expect(component.getGreeting()).toMatch(/^Good /); // This test should pass, because indeed:
-        // 1. getGreeting() does indeed always return something that starts with "Good ".
-        const mockDate = new Date('2025-01-01T08:00:00');
-        jasmine.clock().mockDate(mockDate);
-        expect(component.getGreeting()).toBe('Good morning!');
-        mockDate.setHours(14);
-        jasmine.clock().mockDate(mockDate);
-        expect(component.getGreeting()).toBe('Good afternoon!');
-        mockDate.setHours(20);
-        jasmine.clock().mockDate(mockDate);
-        expect(component.getGreeting()).toBe('Good evening!'); // This test should fail, because the real getGreeting() returns "Good buggy evening!"
-    });
+    it('should wrap getGreeting() return value in an HTML H1 tag', fakeAsync(() => {
+        const mockGetGreetingReturnValue = 'Mockity mock mock mock'; // https://shashankvivek-7.medium.com/testing-a-component-with-stub-services-and-spies-in-jasmine-1428d4242a49
+        const theFirstH1Tag = fixture.nativeElement.querySelector('h1');
+        spyOn(component, 'mockFriendlyGetGreeting').and.returnValue(mockGetGreetingReturnValue); // Introduce a mock that overrides the real getGreeting().
+        fixture.detectChanges();
+        component.updateGreeting(); // updateGreeting()'s behavior is implicitly semi-mocked because it calls getGreeting(), which is explicitly mocked.
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            expect(theFirstH1Tag.textContent).toEqual(mockGetGreetingReturnValue); // This test should pass, because indeed:
+            // 1. our template code does surround {{ greeting }} in an H1 tag.
+        });
 
-    it('should ignore the real getGreeting() if we mock it', () => {
-        const mockGetGreetingReturnValue = 'Heya';
-        spyOn(component, 'getGreeting').and.returnValue(mockGetGreetingReturnValue); // Introduce a mock that overrides the real getGreeting().
-        expect(component.getGreeting()).toBe(mockGetGreetingReturnValue); // This test should pass, because of the mock getGreeting().
-    });
+    }));
 
 });
