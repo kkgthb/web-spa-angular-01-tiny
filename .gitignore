@@ -6,3 +6,4 @@ src/web/coverage
 src/web/test-results
 dist
 out-tsc
+storybook-static
