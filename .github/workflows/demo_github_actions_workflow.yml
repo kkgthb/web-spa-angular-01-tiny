@@ -1,0 +1,40 @@
+name: "Demo - run tests and build deployable artifact"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job_1:
+    runs-on: "ubuntu-latest"
+    name: "First job.  Adjacent jobs run in parallel by default."
+    steps:
+      - id: "checkout_repo"
+        name: "Checkout this repo"
+        uses: "actions/checkout@v5"
+      - id: "install_node"
+        name: "Install Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+      - id: "npm_install"
+        name: "Install NPM dependencies"
+        working-directory: "${{ github.workspace }}/src/web"
+        run: "npm i --force"
+      - id: "run_local_tests"
+        name: "Run unit/integration tests"
+        working-directory: "${{ github.workspace }}/src/web"
+        run: "npm run test"
+      - id: "beautify_local_test_results"
+        name: "Beautify unit/integration test results"
+        uses: "mikepenz/action-junit-report@v5"
+        if: (!cancelled())
+        with:
+          report_paths: |
+            **/test-and-coverage-results/test-results/**/*.xml
+          job_summary: true
+          detailed_summary: true
+          check_annotations: false
+          comment: false
+          skip_annotations: true

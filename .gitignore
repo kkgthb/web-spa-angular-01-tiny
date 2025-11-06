@@ -4,6 +4,7 @@ node_modules
 .angular
 src/web/coverage
 src/web/test-results
+test-and-coverage-results
 dist
 out-tsc
 storybook-static
