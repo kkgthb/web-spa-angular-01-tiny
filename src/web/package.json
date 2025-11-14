@@ -19,6 +19,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "latest",
     "@angular/cli": "latest",
+    "@axe-core/cli": "latest",
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/addon-interactions": "^8.6.12",
     "@storybook/addon-onboarding": "^8.6.12",

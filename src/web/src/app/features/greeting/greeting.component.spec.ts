@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync } from "@angular/core/testing";
 import { GreetingComponent } from "./greeting.component";
-import * as axe from 'axe-core';
+import { checkComponentWcag } from "app/shared/utils/axeWcagComponentChecker/axeWcagComponentChecker";
 
 describe('Greetingcomponent', () => {
     let component: GreetingComponent;
@@ -51,14 +51,9 @@ describe('Greetingcomponent', () => {
         });
     }));
 
-    // Below is an integration test to ensure that the component is WCAG-compliant.
+    // Below is an integration test to ensure that the Greeting component is WCAG-compliant.
     it('should have no WCAG 2.1 AA violations', async () => {
-        const results = await axe.run(fixture.nativeElement, {
-            runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] }
-        });
-        expect(results.violations.length)
-            .withContext('WCAG violations:\n' + JSON.stringify(results.violations, null, 2))
-            .toEqual(0);
+        await checkComponentWcag(fixture);
     });
 
 });
